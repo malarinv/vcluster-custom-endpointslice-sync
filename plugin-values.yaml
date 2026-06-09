@@ -1,0 +1,13 @@
+plugins:
+  custom-endpointslice-sync:
+    image: ghcr.io/malarinv/vcluster-custom-endpointslice-sync:latest
+    imagePullPolicy: IfNotPresent
+    rbac:
+      clusterRole:
+        extraRules:
+          - apiGroups: ["discovery.k8s.io"]
+            resources: ["endpointslices"]
+            verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+          - apiGroups: [""]
+            resources: ["services"]
+            verbs: ["get", "list", "watch"]
