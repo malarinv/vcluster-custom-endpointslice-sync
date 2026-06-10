@@ -84,7 +84,7 @@ func (s *customEndpointSliceSyncer) SyncToHost(ctx *synccontext.SyncContext, eve
 }
 
 func (s *customEndpointSliceSyncer) Sync(ctx *synccontext.SyncContext, event *synccontext.SyncEvent[*discoveryv1.EndpointSlice]) (_ ctrl.Result, retErr error) {
-	patch, err := patcher.NewSyncerPatcher(ctx, event.Host, event.Virtual, nil)
+	patch, err := patcher.NewSyncerPatcher(ctx, event.Host, event.Virtual)
 	if err != nil {
 		return ctrl.Result{}, fmt.Errorf("new syncer patcher: %w", err)
 	}
