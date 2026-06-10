@@ -4,6 +4,7 @@ WORKDIR /src
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -trimpath -ldflags="-s -w" -o /plugin ./cmd/plugin
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM alpine:3.21
 COPY --from=builder /plugin /plugin
+USER 65532:65532
 ENTRYPOINT ["/plugin"]
