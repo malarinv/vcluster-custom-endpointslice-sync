@@ -164,7 +164,19 @@ func ExcludeVirtualEndpointSlice(eps *discoveryv1.EndpointSlice) bool {
 	if eps == nil {
 		return true
 	}
-	return eps.GetLabels()[discoveryv1.LabelManagedBy] == "endpointslice-controller.k8s.io"
+	switch eps.GetLabels()[discoveryv1.LabelManagedBy] {
+	case "endpointslice-controller.k8s.io":
+		// Standard k8s endpointslice controller — managed by Service, not operators.
+		return true
+	case "endpointslicemirroring-controller.k8s.io":
+		// Mirrors a legacy Endpoints object to an EndpointSlice. These originate
+		// from either a headless service or a replicated-from-host service (e.g.
+		// OpenBao). Syncing them back to the host causes a create→GC→delete loop
+		// because the host-side EndpointSlice lives in a different namespace than
+		// the translated host object, so the host GC deletes it immediately.
+		return true
+	}
+	return false
 }
 
 func ExcludePhysicalEndpointSlice(obj client.Object) bool {
