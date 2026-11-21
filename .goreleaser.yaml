@@ -1,0 +1,36 @@
+version: 2
+
+project_name: vcluster-custom-endpointslice-sync
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: vcluster-custom-endpointslice-sync
+    main: ./cmd/plugin
+    binary: plugin
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+
+archives:
+  - id: binary
+    formats:
+      - binary
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+release:
+  github:
+    owner: malarinv
+    name: vcluster-custom-endpointslice-sync
